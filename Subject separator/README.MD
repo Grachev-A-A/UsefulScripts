@@ -23,8 +23,9 @@ pip install hachoir
 - `-v, --verbose`: give more output.
 - `-w, --walk`: search in subdirectorues.
 - `-m, --mode`: chose mode for processing with an existing result folder.
-    - `o, override`: delete existing folder (recursively), then create new;
-    - `a, append`: add files to existing folder.
+    - `o, override`: override existing files with same names if need;
+    - `a, append`: add files to existing folder (with indexes);
+    - `r, remove`: remove existing folder (recursively) befor start, then create new and fill with files.
 - `-d, --date`: specify the first date for search. Format ISO-8601 (yyyy-mm-dd). Default - 1970-01-01.
 - `-t, --time`: time period for search (e.g. your lesson time). Format hh:mm-hh:mm, default - all day.
 - `-T, --timedelta`: search every X days. Default - 7 (every week).
@@ -41,3 +42,15 @@ Result would be: every file in directory with script, which a media file and was
 python3 SubjectSeparator.py -w -d 2019-09-04 -t 13:10-14:40 -T 14 -r philosophy <Path/To/Source/Directory>
 ```
 Result would be: all files from directory <Path/To/Source/Directory> and its subdirectories, which are mediafiles and was created at any philosophy lecture (them started 2019-09-04 and run every two weeks) will be moved to a _philosophy_ folder.
+
+### Change log
+
+##### V 1.1
+- Changing `-m` logics. 
+    - Added `remove` option;
+    - `owerride` option changed from 
+    `removes existing folder` to `override existing files with same names`;
+    - `append` option now works fine - add indexes to files if need.
+#### V 1.0
+- Basic functionality
+    

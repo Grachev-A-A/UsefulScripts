@@ -12,7 +12,7 @@ except ImportError:
     print("\033[31mRequired \"hachoir\" module for work. Type \"pip install hachoir\" and then rerun program.\033[0m")
     sys.exit(-1)
 
-VERSION_NUMBER="1.0"
+VERSION_NUMBER="1.1"
 
 VERSION="{0} version {1}\n\
 Original name: SubjectSeparator.py\n\
@@ -26,7 +26,7 @@ def createArgParser():
     
     parser.add_argument("-V", "--version", action="version", version=VERSION)
     parser.add_argument("-l", "--license", action="version", version=LICENSE, help='show license and exit')
-    parser.add_argument("-m", "--mode", choices=('o', 'override', 'a', 'append'), default='append', 
+    parser.add_argument("-m", "--mode", choices=('o', 'override', 'a', 'append', 'r', 'remove'), default='append', 
         help='specify model of work with already existing output directory (default - append)'
     )
     parser.add_argument('-v', '--verbose', action="store_true", default=False, 
@@ -81,7 +81,7 @@ def replaceArgs(args):
             print("{} is not correct. Format <HH:MM-HH:MM>".format(args.time))
             sys.exit(1)
         args.time = tmp
-    if args.print:
+    if args.verbose:
         print("Got args: {}".format(args))
     pass
 
@@ -109,7 +109,7 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
 
 
 def work_on_dir(path='.'):
-    if args.print:
+    if args.verbose:
         cols, _ = get_terminal_size(fallback=(100, 1))
         l = cols - len("Starting search in {}".format(os.path.join(os.path.curdir, path)))
         print("\033[32m\033[1mStarting search in {}{}\033[0m".format(os.path.join(os.path.curdir, path), " "*l))
@@ -144,16 +144,29 @@ def work_on_dir(path='.'):
                     d.hour == args.time[2] and d.minute <= args.time[3]:
                     if not os.path.exists(os.path.join(args.result, d.strftime("%Y-%m-%d"))):
                         os.mkdir(os.path.join(args.result, d.strftime("%Y-%m-%d")))
-                    os.system("mv \"{}\" \"{}\"".format(os.path.join(path, file_or_directory),
-                        os.path.join(args.result, d.strftime("%Y-%m-%d"))
-                    ))
+                    if os.path.exists(os.path.join(args.result, d.strftime("%Y-%m-%d"), file_or_directory)):
+                        if args.mode in ('o', 'override'):
+                            os.system("mv \"{}\" \"{}\"".format(os.path.join(path, file_or_directory),
+                                os.path.join(args.result, d.strftime("%Y-%m-%d"))
+                            ))
+                        else:
+                            index = 1
+                            while os.path.exists(os.path.join(args.result, d.strftime("%Y-%m-%d"), "{0} ({2}){1}.".format(*file_or_directory.split('.'), index))):
+                                index+=1
+                            os.system("mv \"{}\" \"{}\"".format(os.path.join(path, file_or_directory),
+                                os.path.join(args.result, d.strftime("%Y-%m-%d"), "{0} ({2}){1}.".format(*file_or_directory.split('.'), index))
+                            ))
+                    else:
+                        os.system("mv \"{}\" \"{}\"".format(os.path.join(path, file_or_directory),
+                            os.path.join(args.result, d.strftime("%Y-%m-%d"))
+                        ))
                     count += 1
-                    if args.print:
+                    if args.verbose:
                         l = cols - len("Moved: {} – {}".format(os.path.join(path, file_or_directory), d.date()))
                         print("Moved: {} – {}{}".format(os.path.join(path, file_or_directory), d.date(), " "*l))
                         printProgressBar(i, len(lst), prefix="Search in {}".format(path), suffix="Checking {}".format(file_or_directory))
         i+=1
-    if args.print:
+    if args.verbose:
         l=cols-len("Finished search in {}".format(os.path.join(os.path.curdir, path)))
         print("\n\033[32m\033[1mFinished search in {}{}\033[0m".format(os.path.join(os.path.curdir, path), " "*150))
     return count
@@ -172,12 +185,12 @@ if __name__=="__main__":
     os.chdir(args.path)
 
     # mkdir if need
-    if os.path.exists(args.result) and args.mode in ('o', 'override'):
-        if args.print:
+    if os.path.exists(args.result) and args.mode in ('r', 'remove'):
+        if args.verbose:
             print("Removing old directory {}".format(args.result))
         os.system("rm -r {}".format(args.result))
     if not os.path.exists(args.result):
-        if args.print:
+        if args.verbose:
             print("Creating directory for output: {}".format(args.result))
         os.mkdir(args.result)
     
@@ -187,7 +200,7 @@ if __name__=="__main__":
 wdays = [args.date]
 while wdays[len(wdays)-1] + datetime.timedelta(days=args.timedelta) < datetime.date.today():
     wdays.append(wdays[len(wdays)-1] + datetime.timedelta(days=args.timedelta))
-if args.print:
+if args.verbose:
     print("Dates to check: {}".format(wdays))
 
 # moving files:
@@ -199,7 +212,7 @@ ans = input("All files starting from \033[32m{}\033[0m in period \033[32m{}\033[
 if ans == "y":
     
     count = work_on_dir()
-    print("{}Work done! Total moved: {} files".format("\n" if not args.print else "", count))
+    print("{}Work done! Total moved: {} files".format("\n" if not args.verbose else "", count))
 else:
     print("Work canceled.")
     
