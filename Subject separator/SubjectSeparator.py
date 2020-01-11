@@ -16,7 +16,7 @@ VERSION_NUMBER="1.0"
 
 VERSION="{0} version {1}\n\
 Original name: SubjectSeparator.py\n\
-Author: Alexander Grachev <sagrachov@gmail.com>".format(sys.argv[0], VERSION_NUMBER)
+Author: Alexander Grachev".format(sys.argv[0], VERSION_NUMBER)
 
 LICENSE="This software is distibuted under GNU GPLv3 license.\n\
 Visit http://www.gnu.org/licenses/gpl-3.0.txt for more information."

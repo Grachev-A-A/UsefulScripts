@@ -35,7 +35,7 @@ pip install hachoir
 ```bash
 ./SubjectSeparator.py
 ```
-Result would be: every file in directory with script, which a media file and was created at every 7 day starting from 1970-01-01 wil be moved to ./output.
+Result would be: every file in directory with script, which a media file and was created at every 7 day starting from 1970-01-01 will be moved to ./output.
 
 ```bash
 python3 SubjectSeparator.py -w -d 2019-09-04 -t 13:10-14:40 -T 14 -r philosophy <Path/To/Source/Directory>
