@@ -13,4 +13,4 @@ Installation:\
 ```pip install hachoir```
 
 Usage:  
-See "readme" in [project folder](https://github.com/Grachev-A-A/UsefulScripts/SubjectSeparator).
+See "readme" in [project folder](https://github.com/Grachev-A-A/UsefulScripts/tree/master/Subject%20separator).
